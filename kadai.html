@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>オンライン自習用サンプルコード</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* 地図の高さを設定 */
+        #map {
+            height: 400px;
+            margin-bottom: 20px;
+        }
+        /* グラフを中央寄せにする */
+        canvas {
+            margin: 0 auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Leaflet.jsとChart.jsのサンプルコード</h1>
+
+    <!-- 地図表示セクション -->
+    <h2>1. 地図の表示 (Leaflet.js)</h2>
+    <div id="map"></div>
+    <script>
+        // Leaflet.jsを使って地図を初期化
+        var map = L.map('map').setView([35.6895, 139.6917], 13); // 地図の中心を東京に設定
+
+        // OpenStreetMapのタイルレイヤーを追加
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // マーカーを地図上に追加 (複数)
+        var marker1 = L.marker([35.6895, 139.6917]).addTo(map);
+        marker1.bindPopup("Hello from Tokyo!").openPopup();
+
+        var marker2 = L.marker([35.6995, 139.6927]).addTo(map);
+        marker2.bindPopup("Hello from Shinjuku!").openPopup();
+
+        // ポリゴンを地図上に追加
+        var polygon = L.polygon([
+            [35.6895, 139.6917],
+            [35.6995, 139.7017],
+            [35.6795, 139.6917]
+        ]).addTo(map);
+        polygon.bindPopup("ポリゴンのエリア");
+
+        // ポリラインを地図上に追加
+        var polyline = L.polyline([
+            [35.6895, 139.6917],
+            [35.6897, 139.6957],
+            [35.6905, 139.6997]
+        ]).addTo(map);
+        polyline.bindPopup("ポリラインです。");
+    </script>
+
+    <!-- グラフ表示セクション -->
+    <h2>2. グラフの表示 (Chart.js)</h2>
+    <!-- 棒グラフ -->
+    <canvas id="barChart" width="400" height="200"></canvas>
+    <!-- 折れ線グラフ -->
+    <canvas id="lineChart" width="400" height="200"></canvas>
+    <!-- 円グラフ -->
+    <canvas id="pieChart" width="400" height="200"></canvas>
+    <!-- 時系列データ折れ線グラフ -->
+    <h3>3. 時系列データの折れ線グラフ</h3>
+    <canvas id="timeSeriesChart" width="400" height="200"></canvas>
+
+    <script>
+        // 棒グラフの描画
+        var ctxBar = document.getElementById('barChart').getContext('2d');
+        new Chart(ctxBar, {
+            type: 'bar', // グラフの種類を棒グラフに指定
+            data: {
+                labels: ['A', 'B', 'C'], // x軸のラベル
+                datasets: [{
+                    label: 'データ例', // データセットのラベル
+                    data: [15, 24, 35], // 各バーの値
+                    backgroundColor: ['orange', 'navy', 'lime'] // 各バーの色
+                }]
+            }
+        });
+
+        // 折れ線グラフの描画
+        var ctxLine = document.getElementById('lineChart').getContext('2d');
+        new Chart(ctxLine, {
+            type: 'line', // グラフの種類を折れ線グラフに指定
+            data: {
+                labels: ['1月', '2月', '3月'], // x軸のラベル
+                datasets: [{
+                    label: '月間データ', // データセットのラベル
+                    data: [5, 10, 15], // 各データ点の値
+                    borderColor: 'blue', // 線の色
+                    fill: false // 塗りつぶしを無効化
+                }]
+            }
+        });
+
+        // 円グラフの描画
+        var ctxPie = document.getElementById('pieChart').getContext('2d');
+        new Chart(ctxPie, {
+            type: 'pie', // グラフの種類を円グラフに指定
+            data: {
+                labels: ['Orange', 'Navy', 'Lime'], // セグメントのラベル
+                datasets: [{
+                    data: [55, 40, 50], // 各セグメントの値
+                    backgroundColor: ['orange', 'navy', 'lime'] // 各セグメントの色
+                }]
+            }
+        });
+
+        // 時系列データの折れ線グラフ
+        var ctxTimeSeries = document.getElementById('timeSeriesChart').getContext('2d');
+        new Chart(ctxTimeSeries, {
+            type: 'line', // グラフの種類を折れ線グラフに指定
+            data: {
+                labels: ['2025-01-01', '2025-01-02', '2025-01-03', '2025-01-04', '2025-01-05'], // 時系列データのラベル（日付）
+                datasets: [{
+                    label: '売上データ', // データセットのラベル
+                    data: [150, 200, 180, 210, 250], // 売上データ（y軸の値）
+                    borderColor: 'green', // 線の色
+                    fill: false // 塗りつぶしを無効化
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'category', // x軸をカテゴリ型に設定
+                        title: {
+                            display: true,
+                            text: '日付'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: '売上'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
